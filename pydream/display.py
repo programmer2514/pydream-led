@@ -118,10 +118,10 @@ class display():
         self.change_light(col, row, 0)
 
     def light_on(self, x, y):
-        change_light(x, y, 1)
+        self.change_light(x, y, 1)
 
     def light_off(self, x, y):
-        change_light(x, y, 0)
+        self.change_light(x, y, 0)
 
     def put_sprite(self, x, y, sprite, mode='replace'):
         row = y
