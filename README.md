@@ -15,6 +15,8 @@ Basic use
 
 First, install using `python setup.py install`
 
+Or, if you prefer using PyPI: `pip install pydream-led`
+
 We create an instance of the `display` object and connect:
 
 	import pydream
