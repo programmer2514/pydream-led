@@ -17,6 +17,8 @@ First, install using `python setup.py install`
 
 Or, if you prefer using PyPI: `pip install pydream-led`
 
+The package should auto-install `pyusb`, but you will need to install libusb (upon which pyusb depends) for things to work. libusb is available for most Linux distros via their package managers, and via Homebrew on OS X.
+
 We create an instance of the `display` object and connect:
 
 	import pydream
