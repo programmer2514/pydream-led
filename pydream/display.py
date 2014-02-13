@@ -127,7 +127,12 @@ class display():
         row = y
         for gridrow in sprite:
             col = x
+            if row > 6 or row < 0:
+                continue
             for state in gridrow:
+                if col > 20 or col < 0:
+                    continue
+
                 if mode == 'replace':
                     self.current_frame[row][col] = state
                 elif mode == 'and':
