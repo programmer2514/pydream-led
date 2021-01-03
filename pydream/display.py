@@ -80,7 +80,7 @@ class display():
                 byterow.extend([0,0,0])
 
             for i in range(0,len(byterow)):
-                byterow[i] = chr(byterow[i])
+                byterow[i] = bytes([byterow[i]])
 
             packed_frame.append(
                 struct.pack(
@@ -99,8 +99,21 @@ class display():
         self.packed_frame = packed_frame
 
     def _send_packed_frame(self):
-        for i in range(0,4):
-            assert self.device.ctrl_transfer(0x21, 0x09, 0, 0, self.packed_frame[i]) == 8
+        count = 0
+        while True:
+            try:
+                for i in range(0,4):
+                    assert self.device.ctrl_transfer(0x21, 0x09, 0, 0, self.packed_frame[i]) == 8
+            except Exception as e:
+                count += 1
+                if count >= 100:
+                    raise Exception("Device timed out with the following error:\n" + str(e))
+                    break
+                self.connect()
+                continue
+            else:
+                count = 0
+                break
 
     def refresh(self):
         self._pack_current_frame()
