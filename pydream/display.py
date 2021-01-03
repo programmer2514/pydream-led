@@ -2,6 +2,7 @@ import usb.core
 # import usb.util
 import time
 import struct
+from .font import font
 
 ldict = {}
 for c in range(65,86):
