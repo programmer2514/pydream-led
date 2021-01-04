@@ -129,12 +129,22 @@ class display():
                         self.current_frame[row][col] = self.current_frame[row][col] | state
                     elif mode == 'xor':
                         self.current_frame[row][col] = self.current_frame[row][col] ^ state
+                    elif mode == 'invrep':
+                        if state == 1:
+                            self.current_frame[row][col] = 0
+                        else:
+                            self.current_frame[row][col] = 1
+                    elif mode == 'inv':
+                        if self.current_frame[row][col] == 1:
+                            self.current_frame[row][col] = 0
+                        else:
+                            self.current_frame[row][col] = 1
                     elif mode == 'clear':
                         self.current_frame[row][col] = 0
                     elif mode == 'fill':
                         self.current_frame[row][col] = 1
                     else:
-                        raise ValueError("Mode must be one of: replace, and, or, xor, clear, fill")
+                        raise ValueError("Mode must be one of: replace, and, or, xor, invrep, inv, clear, fill")
                 col += 1
             row += 1
 
@@ -151,6 +161,92 @@ class display():
         for i in string:
             self.put_char(x + offset, y, i, mode)
             offset += 6
+            
+    def scroll_string_right(self, y, string, speed=1, inverse=0):
+        index = -(len(string) * 6) + 1
+        scroll_len = (len(string) * 6) + 21
+        for x in range(scroll_len):
+            self.clear(inverse)
+            if inverse == 0:
+                self.put_string(index, y, string)
+            else:
+                self.put_string(index, y, string, mode='invrep')
+            self.refresh()
+            if speed <= 4:
+                time.sleep(speed / 10)
+            elif speed <= 8:
+                time.sleep(0.2)
+                self.refresh()
+                time.sleep(0.2)
+                self.refresh()
+                time.sleep(speed / 20)
+            else:
+                raise ValueError("Speed must be between 0 and 8")
+            index += 1
+            
+    def scroll_string_left(self, y, string, speed=1, inverse=0):
+        index = 21
+        scroll_len = (len(string) * 6) + 21
+        for x in range(scroll_len):
+            self.clear(inverse)
+            if inverse == 0:
+                self.put_string(index, y, string)
+            else:
+                self.put_string(index, y, string, mode='invrep')
+            self.refresh()
+            if speed <= 4:
+                time.sleep(speed / 10)
+            elif speed <= 8:
+                time.sleep(0.2)
+                self.refresh()
+                time.sleep(0.2)
+                self.refresh()
+                time.sleep(speed / 20)
+            else:
+                raise ValueError("Speed must be between 0 and 8")
+            index -= 1
+            
+    def scroll_string_down(self, x, string, speed=1, inverse=0):
+        index = -7
+        for y in range(15):
+            self.clear(inverse)
+            if inverse == 0:
+                self.put_string(x, index, string)
+            else:
+                self.put_string(x, index, string, mode='invrep')
+            self.refresh()
+            if speed <= 4:
+                time.sleep(speed / 10)
+            elif speed <= 8:
+                time.sleep(0.2)
+                self.refresh()
+                time.sleep(0.2)
+                self.refresh()
+                time.sleep(speed / 20)
+            else:
+                raise ValueError("Speed must be between 0 and 8")
+            index += 1
+            
+    def scroll_string_up(self, x, string, speed=1, inverse=0):
+        index = 7
+        for y in range(15):
+            self.clear(inverse)
+            if inverse == 0:
+                self.put_string(x, index, string)
+            else:
+                self.put_string(x, index, string, mode='invrep')
+            self.refresh()
+            if speed <= 4:
+                time.sleep(speed / 10)
+            elif speed <= 8:
+                time.sleep(0.2)
+                self.refresh()
+                time.sleep(0.2)
+                self.refresh()
+                time.sleep(speed / 20)
+            else:
+                raise ValueError("Speed must be between 0 and 8")
+            index -= 1
 
     def move_right(self, clear_state=0, count=1):
         for row in self.current_frame:
