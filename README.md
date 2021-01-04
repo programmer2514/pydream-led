@@ -44,6 +44,10 @@ sign.move_down(clear_state=0, count=1)   # down
 
 sign.put_sprite(0,0,sprite)  # see Sprite section
 
+# see Strings section
+sign.put_char(0,0,'A')
+sign.put_string(0,0,"Hi!")
+
 sign.clear()  # make sign black
 sign.clear(1) # make sign lit
 ```
