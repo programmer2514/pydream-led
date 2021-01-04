@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name='pydream-led-3',
-      version='0.2.1',
+      version='0.2.2',
       description='PyDream3 - driver for Dream Cheeky 21x7 LED display (VendorId: 0x1d34 DeviceId: 0x001)',
       author='Benjamin Pryor',
       author_email='programmer2514@gmail.com',
