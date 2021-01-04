@@ -102,6 +102,8 @@ Possible modes to specify are:
 - `and`: bit-wise AND the sprite with the frame area's content
 - `or` : as `and`, but using bitwise OR
 - `xor`: as `and`, but using bitwise XOR
+- `invrep`: as `replace`, but inverts the sprite
+- `inv`: inverts all LEDs in the sprite area
 - `clear`: turn off all LEDs in the sprite area
 - `fill` : turn on all LEDs in the sprite area
 
@@ -117,6 +119,21 @@ sign.put_char(0, 0, 'A') # draw the letter A at 0,0; replace what's there
 sign.put_string(0, 0, "Hello", mode='and') # bitwise AND the string with the frame at this location
 ```
 These commands use the PyDream3 font library. See more on fonts below
+
+Scrolling Strings
+-----------------
+
+You may have noticed that most strings don't fit on the message board.
+To solve this issue, PyDream3 has four methods: `scroll_string_right()`,
+`scroll_string_left()`, `scroll_string_down()`, and `scroll_string_up()`.
+These methods will automatically call `refresh` and do NOT support drawing modes.
+```
+sign.scroll_string_right(y, "Hello, World!", speed=1, inverse=0) # Scrolls the text left-to-right at a speed of 1
+sign.scroll_string_left(y, "Hello, World!", speed=2, inverse=1) # Scrolls right-to-left, speed 2, inverted
+sign.scroll_string_down(x, "Hello, World!", speed=0.5, inverse=1) # Scrolls top-to-bottom, speed 0.5, inverted
+sign.scroll_string_up(x, "Hello, World!", speed=8, inverse=0) # Scrolls bottom-to-top, speed 8
+```
+Possible speeds are between 0 and 8, where 0 is fastest and 8 is slowest
 
 Fonts
 -----
