@@ -4,11 +4,6 @@ import time
 import struct
 from .font import font
 
-ldict = {}
-for c in range(65,86):
-    # print chr(c),
-    ldict[chr(c)] = c-65
-
 def util_byteify(row):
     byte = [0,0,0]
     mrow = [0,0,0]
@@ -28,15 +23,6 @@ def util_byteify(row):
         byte[i] = int( byte[i], 2 )
 
     return byte
-
-def decode_grid(location):
-    if len(location) != 2:
-        raise ValueError("Location grid must be in the form A0")
-
-    (col, row) = location.upper()
-    col = ldict[col]
-    row = int(row)
-    return (col,row)
 
 class display():
 
@@ -108,7 +94,7 @@ class display():
             except Exception as e:
                 count += 1
                 if count >= 100:
-                    raise Exception("Device timed out with the following error:\n" + str(e))
+                    raise Exception("Request timed out with the following error:\n" + str(e))
                     break
                 self.connect()
                 continue
@@ -123,14 +109,6 @@ class display():
     def change_light(self, col, row, state):
         self.current_frame[row][col] = state
 
-    def light_on_at(self, location):
-        (col,row) = decode_grid(location)
-        self.change_light(col, row, 1)
-
-    def light_off_at(self, location):
-        (col,row) = decode_grid(location)
-        self.change_light(col, row, 0)
-
     def light_on(self, x, y):
         self.change_light(x, y, 1)
 
@@ -142,30 +120,37 @@ class display():
         for gridrow in sprite:
             col = x
             for state in gridrow:
-                if mode == 'replace':
-                    self.current_frame[row][col] = state
-                elif mode == 'and':
-                    self.current_frame[row][col] = self.current_frame[row][col] & state
-                elif mode == 'or':
-                    self.current_frame[row][col] = self.current_frame[row][col] | state
-                elif mode == 'xor':
-                    self.current_frame[row][col] = self.current_frame[row][col] ^ state
-                elif mode == 'clear':
-                    self.current_frame[row][col] = 0
-                elif mode == 'fill':
-                    self.current_frame[row][col] = 1
-                else:
-                    raise ValueError("Mode must be one of: replace, and, or, xor, clear, fill")
+                if (row >= 0) and (col >= 0) and (row < 7) and (col < 21):
+                    if mode == 'replace':
+                        self.current_frame[row][col] = state
+                    elif mode == 'and':
+                        self.current_frame[row][col] = self.current_frame[row][col] & state
+                    elif mode == 'or':
+                        self.current_frame[row][col] = self.current_frame[row][col] | state
+                    elif mode == 'xor':
+                        self.current_frame[row][col] = self.current_frame[row][col] ^ state
+                    elif mode == 'clear':
+                        self.current_frame[row][col] = 0
+                    elif mode == 'fill':
+                        self.current_frame[row][col] = 1
+                    else:
+                        raise ValueError("Mode must be one of: replace, and, or, xor, clear, fill")
                 col += 1
             row += 1
 
         self.current_frame = self.current_frame[:7]
         for r in range(0, len(self.current_frame)):
             self.current_frame[r] = self.current_frame[r][:21]
-
-    def put_sprite_to(self, location, subgrid, mode='replace'):
-        (start_col,start_row) = decode_grid(location)
-        self.put_sprite(col, row, subgrid, mode)
+        
+    def put_char(self, x, y, char, mode='replace'):
+        if font.INDEX[ord(char)] != None:
+            self.put_sprite(x, y, font.INDEX[ord(char)], mode)
+        
+    def put_string(self, x, y, string, mode='replace'):
+        offset = 0
+        for i in string:
+            self.put_char(x + offset, y, i, mode)
+            offset += 6
 
     def move_right(self, clear_state=0, count=1):
         for row in self.current_frame:
