@@ -15,15 +15,15 @@ Basic use
 
 First, install using `python setup.py install`
 
-~~Or, if you prefer using PyPI: `pip install pydream-led`~~
+~~Or, if you prefer using PyPI: `pip install pydream-led-3`~~
 
 The package should auto-install `pyusb`, but you will need to install libusb (upon which pyusb depends) for things to work. libusb is available for most Linux distros via their package managers, and via Homebrew on OS X. More information about installing libusb on Microsoft Windows is available near the bottom of the page.
 
 We create an instance of the `display` object and connect:
 ```
-import pydream
+import pydream3
 
-sign = pydream.display()
+sign = pydream3.display()
 if not sign.connect():
     raise StandardError("Cannot connect to sign")
 ```
@@ -112,19 +112,39 @@ These commands use the PyDream3 font library. See more on fonts below
 
 Fonts
 -----
-Fonts in PyDream3 are stored as a collection of sprites, each one corresponding to the
-appropriate symbol. These sprites can be replaced one-by-one by the user or the index
-to these sprites can be edited at any time.
+Fonts in PyDream3 are stored as a collection of sprites, each one corresponding to
+the appropriate glyph. These sprites can be replaced using the `set_glyph()` method.
+```
+smile = [[0,1,1,1,0],
+         [1,0,0,0,1],
+         [1,1,0,1,1],
+         [1,0,0,0,1],
+         [1,1,0,1,1],
+         [1,0,1,0,1],
+         [0,1,1,1,0]]
 
-The default sprites and index can be found in [font.py](https://github.com/programmer2514/pydream-led-3/blob/master/pydream/font.py). Each sprite can be edited seperately
-and can be any dimensions. Sprites can be overwritten by reassigning their names to a new matrix
-or by creating your own matrix variable and assigning it to the correct spot in the index.
+font = pydream3.font()
+font.set_glyph('I', smile)
+```
+This code will replace the sprite for the capital I with a smile. Each sprite assigned
+to the font must be 5x7 and follow the same rules as a regular sprite.
+
+The font index is an index of all the sprites used to display text. This index can
+be edited in bulk to completely change the font. However, this method is not
+encouraged and there is no function supplied to do this. All normal list functions
+(E.G. `push()`, `append()`, etc.) will still work on the font index.
+```
+new_font = [ASCII_char_0, ASCII_char_1, ..., ASCII_char_126, ASCII_char_127]
+font.INDEX = new_font
+```
+Any character that is not assigned most be set to `None`.
+The default font index can be found in [font.py](https://github.com/programmer2514/pydream-led-3/blob/master/pydream3/font.py#L667-L698).
 
 Installing libusb on Microsoft Windows
 --------------------------------------
 
 1) Download the latest version of libusb from [here (7z)](https://github.com/libusb/libusb/releases/latest)
-2) Extract the 7zip file and navigate to `\VS2019\MS64\dll\`
+2) Extract the [7zip](https://www.7-zip.org/download.html) file and navigate to `\VS2019\MS64\dll\`
 3) Copy all of the contained files to the folder of your choice (E.G. `C:\LibUSB\bin\`)
 4) Press the windows key and search for `Edit the system environment variables`
 5) Open it and click `Environment Variables...`
