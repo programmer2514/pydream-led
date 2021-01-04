@@ -3,6 +3,10 @@ PyDream3
 
 Python interface for talking to the Dream Cheeky 21x7 LED display (VendorId: 0x1d34 DeviceId: 0x0013)
 
+Based on the original PyDream by Darren P. Meyer, which can be found [here](https://github.com/darrenpmeyer/pydream-led)
+
+#
+
 I'm fairly new to Python libraries; as a result, there may be some strange approaches here.
 I'm open to accepting pull requests to improve the code, such as:
 
