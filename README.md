@@ -134,12 +134,12 @@ smile = [[0,1,1,1,0],
 font = pydream3.font()
 font.set_glyph('I', smile)
 ```
-This code will replace the sprite for the capital I with a smile. Each sprite assigned
-to the font must be 5x7 and follow the same rules as a regular sprite.
+This code will replace the sprite for the capital letter I with a smile. Each sprite
+assigned to the font must be 5x7 and follow the same rules as a regular sprite.
 
 The font index is an index of all the sprites used to display text. This index can
 be edited in bulk to completely change the font. However, this method is not
-encouraged and there is no function supplied to do this. All normal list functions
+encouraged and there is no method supplied to do this. All normal list methods
 (E.G. `push()`, `append()`, etc.) will still work on the font index.
 ```
 new_font = [ASCII_char_0, ASCII_char_1, ..., ASCII_char_126, ASCII_char_127]
