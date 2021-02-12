@@ -53,7 +53,7 @@ sign.clear(1) # make sign lit
 ```
 We can also just specify the frame directly, like so:
 ```
-disp.current_frame = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+sign.current_frame = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
                       [1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
                       [1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
                       [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -65,12 +65,18 @@ This approach isn't generally encouraged, which is why no method is provided
 to support it. `current_frame` must be a list of 7 "rows" with 21 "columns"
 each. A 1 represents a lit LED, a 0 is an unlit LED.
 
+After setting up the frame, we can optionally set the brightness of the display:
+```
+sign.set_brightness(1)
+```
+The brightness can either be 0, 1, or 2, where 0 is darkest, 2 is brightest, and 1 is in-between
+
 By combining these methods, we set up the frame we want to see, then tell the
 display to refresh:
 ```
 sign.refresh()
 ```
-**NOTE:** this LED sign will only display for about 0.4 seconds for each 
+**NOTE:** this LED sign will only display for just under 0.4 seconds for each 
 refresh. To maintain an image, `refresh()` must be called at least that 
 frequently.
 
