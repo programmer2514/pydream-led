@@ -3,6 +3,10 @@ PyDream3
 
 Python interface for talking to the Dream Cheeky 21x7 LED display (VendorId: 0x1d34 DeviceId: 0x0013)
 
+Based on the original PyDream by Darren P. Meyer, which can be found [here](https://github.com/darrenpmeyer/pydream-led)
+
+#
+
 I'm fairly new to Python libraries; as a result, there may be some strange approaches here.
 I'm open to accepting pull requests to improve the code, such as:
 
@@ -15,15 +19,15 @@ Basic use
 
 First, install using `python setup.py install`
 
-~~Or, if you prefer using PyPI: `pip install pydream-led`~~
+~~Or, if you prefer using PyPI: `pip install pydream-led-3`~~
 
-The package should auto-install `pyusb`, but you will need to install libusb (upon which pyusb depends) for things to work. libusb is available for most Linux distros via their package managers, and via Homebrew on OS X. More information about installing libusb on Microsoft Windows is available near the bottom of the page.
+The package should auto-install `pyusb`, but you will need to install libusb (upon which pyusb depends) for things to work. libusb is available for most Linux distros via their package managers, and via Homebrew on OS X. More information about installing libusb on Microsoft Windows is available [here](#installing-libusb-on-microsoft-windows).
 
 We create an instance of the `display` object and connect:
 ```
-import pydream
+import pydream3
 
-sign = pydream.display()
+sign = pydream3.display()
 if not sign.connect():
     raise StandardError("Cannot connect to sign")
 ```
@@ -39,6 +43,10 @@ sign.move_up(clear_state=0, count=1)     # up
 sign.move_down(clear_state=0, count=1)   # down
 
 sign.put_sprite(0,0,sprite)  # see Sprite section
+
+# see Strings section
+sign.put_char(0,0,'A')
+sign.put_string(0,0,"Hi!")
 
 sign.clear()  # make sign black
 sign.clear(1) # make sign lit
@@ -94,6 +102,8 @@ Possible modes to specify are:
 - `and`: bit-wise AND the sprite with the frame area's content
 - `or` : as `and`, but using bitwise OR
 - `xor`: as `and`, but using bitwise XOR
+- `invrep`: as `replace`, but inverts the sprite
+- `inv`: inverts all LEDs in the sprite area
 - `clear`: turn off all LEDs in the sprite area
 - `fill` : turn on all LEDs in the sprite area
 
@@ -110,21 +120,56 @@ sign.put_string(0, 0, "Hello", mode='and') # bitwise AND the string with the fra
 ```
 These commands use the PyDream3 font library. See more on fonts below
 
+Scrolling Strings
+-----------------
+
+You may have noticed that most strings don't fit on the message board.
+To solve this issue, PyDream3 has four methods: `scroll_string_right()`,
+`scroll_string_left()`, `scroll_string_down()`, and `scroll_string_up()`.
+These methods will automatically call `refresh` and do NOT support drawing modes.
+```
+sign.scroll_string_right(y, "Hello, World!", speed=1, inverse=0) # Scrolls the text left-to-right at a speed of 1
+sign.scroll_string_left(y, "Hello, World!", speed=2, inverse=1) # Scrolls right-to-left, speed 2, inverted
+sign.scroll_string_down(x, "Hello, World!", speed=0.5, inverse=1) # Scrolls top-to-bottom, speed 0.5, inverted
+sign.scroll_string_up(x, "Hello, World!", speed=8, inverse=0) # Scrolls bottom-to-top, speed 8
+```
+Possible speeds are between 0 and 8, where 0 is fastest and 8 is slowest
+
 Fonts
 -----
-Fonts in PyDream3 are stored as a collection of sprites, each one corresponding to the
-appropriate symbol. These sprites can be replaced one-by-one by the user or the index
-to these sprites can be edited at any time.
+Fonts in PyDream3 are stored as a collection of sprites, each one corresponding to
+the appropriate glyph. These sprites can be replaced using the `set_glyph()` method.
+```
+smile = [[0,1,1,1,0],
+         [1,0,0,0,1],
+         [1,1,0,1,1],
+         [1,0,0,0,1],
+         [1,1,0,1,1],
+         [1,0,1,0,1],
+         [0,1,1,1,0]]
 
-The default sprites and index can be found in [font.py](https://github.com/programmer2514/pydream-led-3/blob/master/pydream/font.py). Each sprite can be edited seperately
-and can be any dimensions. Sprites can be overwritten by reassigning their names to a new matrix
-or by creating your own matrix variable and assigning it to the correct spot in the index.
+font = pydream3.font()
+font.set_glyph('I', smile)
+```
+This code will replace the sprite for the capital letter I with a smile. Each sprite
+assigned to the font must be 5x7 and follow the same rules as a regular sprite.
+
+The font index is an index of all the sprites used to display text. This index can
+be edited in bulk to completely change the font. However, this method is not
+encouraged and there is no method supplied to do this. All normal list methods
+(E.G. `push()`, `append()`, etc.) will still work on the font index.
+```
+new_font = [ASCII_char_0, ASCII_char_1, ..., ASCII_char_126, ASCII_char_127]
+font.INDEX = new_font
+```
+Any character that is not assigned most be set to `None`.
+The default font index can be found in [font.py](https://github.com/programmer2514/pydream-led-3/blob/master/pydream3/font.py#L667-L698).
 
 Installing libusb on Microsoft Windows
 --------------------------------------
 
 1) Download the latest version of libusb from [here (7z)](https://github.com/libusb/libusb/releases/latest)
-2) Extract the 7zip file and navigate to `\VS2019\MS64\dll\`
+2) Extract the [7zip](https://www.7-zip.org/download.html) file and navigate to `\VS2019\MS64\dll\`
 3) Copy all of the contained files to the folder of your choice (E.G. `C:\LibUSB\bin\`)
 4) Press the windows key and search for `Edit the system environment variables`
 5) Open it and click `Environment Variables...`
