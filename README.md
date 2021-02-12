@@ -19,7 +19,7 @@ Basic use
 
 First, install using `python setup.py install`
 
-~~Or, if you prefer using PyPI: `pip install pydream-led-3`~~
+Or, if you prefer using PyPI: `pip install pydream-led-3`
 
 The package should auto-install `pyusb`, but you will need to install libusb (upon which pyusb depends) for things to work. libusb is available for most Linux distros via their package managers, and via Homebrew on OS X. More information about installing libusb on Microsoft Windows is available [here](#installing-libusb-on-microsoft-windows).
 
