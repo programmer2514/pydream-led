@@ -183,4 +183,4 @@ Installing libusb on Microsoft Windows
 7) Click new and type the path that you placed the dll in (E.G. `C:\LibUSB\bin\`)
 8) Click <kbd>OK</kbd>, click <kbd>OK</kbd>, and then click <kbd>OK</kbd> again
 9) Restart Python
-10) PyUSB syould work now
+10) PyUSB should work now
